@@ -21,6 +21,7 @@ class App extends React.Component {
     return (
       <div>
         <h1>Fam.ly</h1>
+        <h1>HELLO</h1>
         <Search />
         <RoomList rooms={this.state.roomList} />
         <Sidebar />
@@ -29,4 +30,4 @@ class App extends React.Component {
   }
 }
 
-// ReactDOM.render(<App />, document.getElementById('homepage'));
+ReactDOM.render(<App />, document.getElementById('homepage'));

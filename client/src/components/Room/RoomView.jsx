@@ -70,7 +70,7 @@ class RoomView extends React.Component {
       this.setState({
         startOptions: { playerVars: { start: 0 } },
       });
-    }
+    } 
     // when video is unstarted
     if (e.data === -1) {
       e.target.playVideo();

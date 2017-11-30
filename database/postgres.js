@@ -2,7 +2,7 @@ require('dotenv').config();
 const Sequelize = require('sequelize');
 
 let params = {};
-if (!process.env.LOCAL) { params = { dialect: 'postgres', protocol: 'postgres', logging: false, dialectOptions: { ssl: true } }; }
+if (!process.env.LOCAL) { params = { dialect: 'postgres', protocol: 'postgres', logging: false, dialectOptions: { ssl: true }}; }
 const sequelize = new Sequelize(process.env.DATABASE_URL, params);
 
 sequelize.authenticate()
@@ -26,8 +26,8 @@ const Room = sequelize.define('room', {
   startTime: Sequelize.DATE,
 });
 
-// Video.sync({ force: true })
-// Room.sync({ force: true })
+Video.sync({ force: true })
+Room.sync({ force: true })
 
 const createVideoEntry = (videoData) => {
   const videoEntry = {
@@ -38,6 +38,8 @@ const createVideoEntry = (videoData) => {
   };
   return Video.create(videoEntry); // returns a promise when called
 };
+
+var x = '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
 
 // Room Queries
 const getRoomProperties = () => Room.findById(1).then(room => room.dataValues);

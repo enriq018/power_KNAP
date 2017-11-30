@@ -3,16 +3,19 @@ import PropTypes from 'prop-types';
 import MessageInput from './MessageInput';
 import Messages from './Messages';
 
+///////MAKE SURE YOU HAVE RIGHT FOLDER 
 class ChatView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       messages: [],
+      
     };
     this.sendMessage = this.sendMessage.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
+
     if (nextProps.message !== '') {
       this.setState({
         messages: this.state.messages.concat({
