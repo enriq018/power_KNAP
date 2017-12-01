@@ -22,6 +22,7 @@ class App extends React.Component {
       //   picture: '',
       // },
       // selectedEvent: {},
+      newRoom:''
     };
   }
   //
@@ -58,7 +59,7 @@ class App extends React.Component {
     return (
       <div>
         <SiteNavBar />
-        <Main />
+        <Main newRoom = {this.state.newRoom}/>
 
       </div>
     );

@@ -13,7 +13,7 @@ import Javi from '../Homepage/Javi';
 // and /schedule routes will match any pathname that starts
 // with /roster or /schedule. The / route will only match
 // when the pathname is exactly the string "/"
-const Main = props => (
+const Main = (props) => (
   <main>
     <Switch>
       <Route exact path="/" component={HomePage} />
@@ -24,7 +24,7 @@ const Main = props => (
       {/* <Route path="/signup" component={SignupPage} /> */}
       <Route
         path="/rooms"
-        render={() => (<RoomView />)}
+        render={() => (<RoomView roomName = {props.roomName}/>)}
       />
       {/* <Route path="/match" render={() => <MatchPage userId={props.userdata.userid} />} />
       <Route

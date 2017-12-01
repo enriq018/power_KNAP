@@ -12,6 +12,7 @@ const SiteNavBar = (props) => (
     <a ><Link to="/javi">JAVI LINK</Link></a>
     <a class="fbbtn"><FBLogin /></a>
   </div>
+
 </div>
 )
 
