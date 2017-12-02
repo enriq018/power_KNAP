@@ -3,6 +3,7 @@ import SiteNavBar from './SiteNavBar';
 import Main from './Main';
 import axios from 'axios';
 
+
 // import LoginPage from './LoginPage';
 
 class App extends React.Component {
@@ -18,22 +19,32 @@ class App extends React.Component {
   }
 
   selectRoom (id) {
-    console.log('look, a room has been selected');
     this.setState({selectedRoom: id});
   }
 
   createRoom(roomName) {
-    console.log('in the app',roomName);
+    //post with roomName to server
+    axios.post(`createRoom/${roomName}`,)
+      .then((data) => {
+        console.log('created room: ', roomName)
+        this.setState({selectedRoom: data});
+        //on success, refresh all rooms
+      }).then(()=> this.getAllRooms())
+        .catch((error)=> console.log('error on createRoom:', error))
   }
 
-  componentDidMount() {
+  getAllRooms() {
     axios.get('/allrooms')
       .then((data) => {
         //data = JSON.parse(data);
         console.log('HEY!!!!!!!!', data);
-        this.setState({allRooms: data.data});
+        this.setState({allRooms: data.data.reverse()});
       })
       .catch((err) => {console.log(err)})
+  }
+
+  componentDidMount() {
+    this.getAllRooms()
   }
 
   render() {

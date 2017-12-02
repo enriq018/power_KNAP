@@ -1,7 +1,6 @@
 import React from 'react';
 
 const PreviewRoom = (props) => {
-  {console.log('these are props: ', props)}
   return(
   <div className="panel" onClick={()=> {
     console.log('clicked!', props);

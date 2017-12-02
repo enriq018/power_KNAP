@@ -34,7 +34,7 @@ app.get('/allrooms', (req, res) => {
   db.getRoomNames()
     .then((rooms) => {
       rooms.forEach((room) => {
-        console.log('----------------------', room.dataValues.roomName, '-----------------------------');
+        // console.log('----------------------', room.dataValues.roomName, '-----------------------------');
         allRoomNames.push(room);
       })
     })
@@ -64,7 +64,7 @@ app.get('/search', (req, res) => {
 
 app.patch('/playNext/:roomId/:length', (req, res) => {
   const roomPlaylistLength = Number(req.params.length);
-  console.log('here', req.params.length)
+  // console.log('here', req.params.length)
   const sendIndex = ({ indexKey }) => {
     roomSpace[req.params.roomId].emit('playNext', indexKey);
   };
@@ -82,22 +82,29 @@ app.patch('/playNext/:roomId/:length', (req, res) => {
     .catch(err => res.send(err));
 });
 
+app.post('/createRoom/:roomName', (req, res) => {
+  db.createRoom(req.params.roomName, (data) => {
+    res.sendStatus(201)
+    res.send(data);
+  })
+})
+
 // Room Socket Events
 app.get('/openRoomConnection/:userId/:roomId', (req, res) => {
-console.log(`HELLO FROM ROOM ${req.params.roomId}`)
+// console.log(`HELLO FROM ROOM ${req.params.roomId}`)
 if (roomSpace[req.params.roomId] !== undefined) {
   console.log('test')
-  res.send(`Room Connected to RoomId: ${req.params.roomId}`);
+  // res.send(`Room Connected to RoomId: ${req.params.roomId}`);
 }
 
   roomSpace[req.params.roomId] = io.of(`/room${req.params.roomId}`);
-  console.log(roomSpace[req.params.roomId])
+  // console.log(roomSpace[req.params.roomId])
 
   let roomHost;
   const giveHostStatus = host => roomSpace[req.params.roomId].to(host).emit('host');
 
   roomSpace[req.params.roomId].on('connection', (socket) => {
-    console.log(`connected to ${Object.keys(socket.nsp.sockets).length} socket(s)`);
+    // console.log(`connected to ${Object.keys(socket.nsp.sockets).length} socket(s)`);
     roomSpace[req.params.roomId].to(socket.id).emit('id', socket.id);
     if (Object.keys(socket.nsp.sockets).length === 1) {
       // roomHost = socket.id;  //original line
@@ -163,3 +170,5 @@ if (roomSpace[req.params.roomId] !== undefined) {
   });
   res.send(`Room Connected to RoomId: ${req.params.roomId}`);
 });
+
+

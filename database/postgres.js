@@ -35,7 +35,11 @@ const Rooms = sequelize.define('rooms', {
   isPrivate: Sequelize.BOOLEAN,
 });
 
-const UsersRooms = sequelize.define('users_rooms', {});
+
+
+const UsersRooms = sequelize.define('users_rooms', {
+  isRoomHost: Sequelize.BOOLEAN,
+});
 
 
 // Users.sync({ force: true });
@@ -66,6 +70,15 @@ const resetRoomIndex = roomId => Rooms.findById(roomId).then(room => room.update
 const getIndex = roomId => Rooms.findById(roomId).then(room => room.dataValues.indexKey);
 const setStartTime = roomId => Rooms.findById(roomId).then(room => room.update({ startTime: Date.now() }));
 const getRoomNames = () => Rooms.findAll();
+const createRoom = (roomName, cb) => {
+  Rooms.create({indexKey: 0, startTime: sequelize.fn('NOW'), roomName: `'${roomName}'`, isPrivate: false})
+  .then((data) => {
+  // console.log('!!!!!!', data.dataValues.id)
+  console.log('added:', roomName )
+  cb(data.dataValues.id)
+  })
+  .catch(error => console.log(error))
+}
 
 // Video Queries
 const findVideos = () => Videos.findAll();
@@ -80,3 +93,4 @@ exports.setStartTime = setStartTime;
 exports.findVideos = findVideos;
 exports.removeFromPlaylist = removeFromPlaylist;
 exports.getRoomNames = getRoomNames;
+exports.createRoom = createRoom;
