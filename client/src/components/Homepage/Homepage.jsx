@@ -33,7 +33,6 @@ class Homepage extends React.Component {
 
 
   render() {
-    console.log('aloha', this.props.roomList);
     return (
       <div>
         <h1>Browse Rooms</h1>

@@ -35,7 +35,11 @@ const Rooms = sequelize.define('rooms', {
   isPrivate: Sequelize.BOOLEAN,
 });
 
-const UsersRooms = sequelize.define('users_rooms', {});
+
+
+const UsersRooms = sequelize.define('users_rooms', {
+  isRoomHost: Sequelize.BOOLEAN,
+});
 
 
 // Users.sync({ force: true });
@@ -68,6 +72,16 @@ const getIndex = roomId => Rooms.findById(roomId).then(room => room.dataValues.i
 const setStartTime = roomId => Rooms.findById(roomId).then(room => room.update({ startTime: Date.now() }));
 const getRoomNames = () => Rooms.findAll({ where: { isPrivate: false } });
 
+const createRoom = (roomName, cb) => {
+  Rooms.create({indexKey: 0, startTime: sequelize.fn('NOW'), roomName: `'${roomName}'`, isPrivate: false})
+  .then((data) => {
+  // console.log('!!!!!!', data.dataValues.id)
+  console.log('added:', roomName )
+  cb(data.dataValues.id)
+  })
+  .catch(error => console.log(error))
+}
+
 // Video Queries
 const findVideos = roomId => sequelize.query(`select distinct on ("createdAt") * from videos where "roomId" = ${roomId}`, { type: sequelize.QueryTypes.SELECT});
 const removeFromPlaylist = (title, roomId, createdTime) => Videos.findAll({ where: { videoName: title, roomId: roomId , createdAt: createdTime} }).then(video => video.destroy());
@@ -81,3 +95,4 @@ exports.setStartTime = setStartTime;
 exports.findVideos = findVideos;
 exports.removeFromPlaylist = removeFromPlaylist;
 exports.getRoomNames = getRoomNames;
+exports.createRoom = createRoom;
