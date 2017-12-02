@@ -1,19 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import FBLogin from './FBLogin';
 // import LoginButton from './LoginButton';
 // import SearchBox from './SearchBox';
 
-const SiteNavBar = function (props) {
-  return (
-    <div className="topnav" id="myTopnav">
-      <Link to="/" >Home</Link>
-      <Link to="/rooms">Room</Link>)
-      {/* {!props.isLoggedin && (<LoginButton triggerLogin={props.triggerLogin} />)}
-      {props.isLoggedin && (<Link to="/match">Find a Match </Link>)}
-      {props.isLoggedin && (<Link to="/viewMatches">View Your Matches </Link>)}
-      <SearchBox searchHandler={props.searchHandler} /> */}
-    </div>
-  );
-};
+const SiteNavBar = (props) => (
+<div>
+  <div class="topnav" id="myTopnav">
+    <a class="active"><Link to="/" >Home</Link></a>
+    <a ><Link to="/rooms">Room</Link></a>
+    <a ><Link to="/javi">JAVI LINK</Link></a>
+    <a class="fbbtn"><FBLogin /></a>
+  </div>
+</div>
+)
 
 export default SiteNavBar;
+

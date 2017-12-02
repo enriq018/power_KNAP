@@ -1,64 +1,58 @@
 import React from 'react';
 import SiteNavBar from './SiteNavBar';
 import Main from './Main';
+import axios from 'axios';
+
+
 // import LoginPage from './LoginPage';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    // this.toggleLogin = this.toggleLogin.bind(this);
-    // this.searchHandler = this.searchHandler.bind(this);
-    // this.eventSearchClick = this.eventSearchClick.bind(this);
-    // this.setUser = this.setUser.bind(this);
+
     this.state = {
-      // showLogin: false,
-      // searchQuery: '',
-      // alreadyLoggedin: false,
-      // userdata: {
-      //   userid: 0,
-      //   name: '',
-      //   username: '',
-      //   bio: '',
-      //   picture: '',
-      // },
-      // selectedEvent: {},
+      allRooms: [{id:1, roomName:'first'}, {id:2, roomName:'second'}, {id:3, roomName:'third'} ,{id:4, roomName:'fourth'}],
+      selectedRoom: {id:null, roomName:null},
     };
+    this.selectRoom = this.selectRoom.bind(this);
+    this.createRoom = this.createRoom.bind(this);
   }
-  //
-  // setUser(userdata) {
-  //   this.setState({
-  //     userdata: {
-  //       userid: userdata.userid,
-  //       name: userdata.name,
-  //       username: userdata.username,
-  //       bio: userdata.bio,
-  //       picture: userdata.picture,
-  //     },
-  //     alreadyLoggedin: !this.state.alreadyLoggedin,
-  //     showLogin: false,
-  //   });
-  // }
-  //
-  // searchHandler(query) {
-  //   this.setState({
-  //     searchQuery: query,
-  //   });
-  // }
-  //
-  // toggleLogin() {
-  //   this.setState({ showLogin: !this.state.showLogin });
-  // }
-  //
-  // eventSearchClick(event) {
-  //   console.log(event);
-  //   this.setState({ selectedEvent: event });
-  // }
+
+  selectRoom (id) {
+    this.setState({selectedRoom: id});
+  }
+
+  createRoom(roomName) {
+    //post with roomName to server
+    axios.post(`createRoom/${roomName}`,)
+      .then((data) => {
+        console.log('created room: ', roomName)
+        this.setState({selectedRoom: data});
+        //on success, refresh all rooms
+      }).then(()=> this.getAllRooms())
+        .catch((error)=> console.log('error on createRoom:', error))
+  }
+
+  getAllRooms() {
+    axios.get('/allrooms')
+      .then((data) => {
+        //data = JSON.parse(data);
+        console.log('HEY!!!!!!!!', data);
+        this.setState({allRooms: data.data.reverse()});
+      })
+      .catch((err) => {console.log(err)})
+  }
+
+  componentDidMount() {
+    this.getAllRooms()
+  }
 
   render() {
     return (
       <div>
         <SiteNavBar />
-        <Main />
+        <Main roomList={this.state.allRooms} selectedRoom={this.state.selectedRoom}
+        filterRooms={this.selectRoom} createRoom={this.createRoom}/>
 
       </div>
     );

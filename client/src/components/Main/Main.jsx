@@ -6,6 +6,7 @@ import { Switch, Route } from 'react-router-dom';
 // import MatchPage from './MatchPage';
 import HomePage from '../Homepage/Homepage';
 import RoomView from '../Room/RoomView';
+import Javi from '../Homepage/Javi';
 
 // The Main component renders one of the three provided
 // Routes (provided that one matches). Both the /roster
@@ -15,11 +16,15 @@ import RoomView from '../Room/RoomView';
 const Main = props => (
   <main>
     <Switch>
-      <Route exact path="/" component={HomePage} />
+      <Route exact path="/" render={() => (<HomePage filterRooms={props.filterRooms} roomList={props.roomList} createRoom={props.createRoom}/>  )} />
+         <Route
+        path="/javi"
+        render={() => (<Javi />)}
+      />
       {/* <Route path="/signup" component={SignupPage} /> */}
       <Route
         path="/rooms"
-        render={() => (<RoomView />)}
+        render={() => (<RoomView id={props.selectedRoom}/>)}
       />
       {/* <Route path="/match" render={() => <MatchPage userId={props.userdata.userid} />} />
       <Route

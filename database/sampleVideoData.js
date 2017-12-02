@@ -12,7 +12,7 @@ const sampleVideoData = [{
     description: 'My website - https://www.thenewboston.com/videos.php Have questions about the tutorial or React? Ask them here ...',
     thumbnails: {
       default: {
-        url: 'https://i.ytimg.com/vi/4ZAEBxGipoA/default.jpg',
+        url: 'http://www.silota.com/docs/images/getting-started/mysql-vs-postgresql.jpg',
         width: 120,
         height: 90,
       },

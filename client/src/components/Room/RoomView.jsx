@@ -8,13 +8,25 @@ import VideoPlayer from './VideoPlayer';
 import Playlist from './Playlist';
 import Search from './Search';
 import ChatView from './ChatView';
+let roomSocket;
 
-const roomSocket = io('/room');
 
+const superUniqueWord = 4;
 class RoomView extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
+      socketsOpen: false,
+      roomstate: {
+        currentVideo: undefined,
+        playlist: [],
+        startOptions: null,
+        isHost: false,
+        message: '',
+        username: '',
+        user: null,
+      },
+
       currentVideo: undefined,
       playlist: [],
       startOptions: null,
@@ -32,25 +44,34 @@ class RoomView extends React.Component {
   }
 
   componentDidMount() {
-    if (cookie.parse(document.cookie).user) {
-      this.setState({ user: cookie.parse(document.cookie).user })
+    if (!this.state.socketsOpen) {
+      axios.get(`/openRoomConnection/USER_ID_WILL_GO_HERE/${superUniqueWord}`)
+        .then(() => {
+          roomSocket = io(`/room${superUniqueWord}`);
+          this.setState({ socketsOpen: true });
+          this.componentDidMount();
+        });
+    } else {
+      if (cookie.parse(document.cookie).user) {
+        this.setState({ user: cookie.parse(document.cookie).user })
+      }
+      this.renderRoom();
+      roomSocket.on('default', () => this.setState({ currentVideo: undefined }));
+      roomSocket.on('host', () => this.setState({ isHost: true }));
+      roomSocket.on('retrievePlaylist', videos => this.addToPlaylist(videos));
+      roomSocket.on('playNext', (next) => {
+        this.setState({
+          currentVideo: this.state.playlist[next],
+        });
+      });
+      roomSocket.on('error', err => console.error(err));
+      roomSocket.on('pushingMessage', (message) => {
+        this.setState({
+          message,
+        });
+      });
+      roomSocket.on('id', id => this.setState({ username: id }));
     }
-    this.renderRoom();
-    roomSocket.on('default', () => this.setState({ currentVideo: undefined }));
-    roomSocket.on('host', () => this.setState({ isHost: true }));
-    roomSocket.on('retrievePlaylist', videos => this.addToPlaylist(videos));
-    roomSocket.on('playNext', (next) => {
-      this.setState({
-        currentVideo: this.state.playlist[next],
-      });
-    });
-    roomSocket.on('error', err => console.error(err));
-    roomSocket.on('pushingMessage', (message) => {
-      this.setState({
-        message,
-      });
-    });
-    roomSocket.on('id', id => this.setState({ username: id }));
   }
 
   componentWillUnmount() {
@@ -65,7 +86,7 @@ class RoomView extends React.Component {
     // when video has ended
     if (e.data === 0) {
       if (this.state.isHost) {
-        axios.patch(`/playNext/${this.state.playlist.length - 1}`);
+        axios.patch(`/playNext/${superUniqueWord}/${this.state.playlist.length - 1}`);
       }
       this.setState({
         startOptions: { playerVars: { start: 0 } },
@@ -106,7 +127,7 @@ class RoomView extends React.Component {
   }
 
   renderRoom() {
-    return axios.get('/renderRoom')
+    return axios.get(`/renderRoom/${superUniqueWord}`)
       .then(({ data }) => {
         const currentTime = Date.now();
         const timeLapsed = moment.duration(moment(currentTime).diff(data.start)).asSeconds();
@@ -123,6 +144,18 @@ class RoomView extends React.Component {
   }
 
   render() {
+    if (!this.state.socketsOpen) {
+      return (
+        <div>
+          <img
+            src="https://media.giphy.com/media/xTk9ZvMnbIiIew7IpW/giphy.gif"
+            alt="Loading Room"
+          />
+        </div>
+      );
+    }
+
+
     let playlistComponent;
     if (this.state.isHost) {
       playlistComponent = (<Playlist
@@ -157,6 +190,7 @@ class RoomView extends React.Component {
         />
       </div>
     );
+// })
   }
 }
 
